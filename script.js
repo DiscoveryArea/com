@@ -25,7 +25,7 @@ const StorageManager = {
 
             // Save to localStorage for automatic persistence
             localStorage.setItem('discoveryAreaState', JSON.stringify(stateToSave));
-            
+
             Utils.showNotification('Data saved automatically!', 'success');
         } catch (error) {
             console.error('Failed to save state:', error);
@@ -37,7 +37,7 @@ const StorageManager = {
         try {
             // Load from localStorage for automatic persistence
             const savedData = localStorage.getItem('discoveryAreaState');
-            
+
             if (savedData) {
                 const parsedState = JSON.parse(savedData);
 
@@ -1128,7 +1128,7 @@ const AdminManager = {
         APP_STATE.approvedLocations.unshift(location);
         APP_STATE.locations.push(location);
 
-        // Save state to persistent storage
+        // Save state to persistent storage (data.json file)
         await StorageManager.saveState();
 
         // Update UI
@@ -1148,7 +1148,7 @@ const AdminManager = {
         const location = APP_STATE.pendingLocations[locationIndex];
         APP_STATE.pendingLocations.splice(locationIndex, 1);
 
-        // Save state to persistent storage
+        // Save state to persistent storage (data.json file)
         await StorageManager.saveState();
 
         this.updatePendingCount();
@@ -1339,7 +1339,7 @@ const AdminManager = {
             Utils.showNotification(`🗑️ Pending location "${locationName}" has been deleted.`, 'success');
         }
 
-        // Save state to persistent storage
+        // Save state to persistent storage (data.json file)
         await StorageManager.saveState();
 
         // Update admin panel counters and displays
