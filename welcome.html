@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discovery Area - Welcome</title>
+    <link rel="stylesheet" href="welcome.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Ensure page loads immediately */
+        body {
+            opacity: 0;
+            animation: pageLoad 0.5s ease-out 0.1s forwards;
+        }
+        
+        @keyframes pageLoad {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div class="particles-container" id="particles"></div>
+    
+    <!-- Animated Background Shapes -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <!-- Header with floating logo -->
+        <div class="welcome-header">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h1 class="logo-text">Discovery Area</h1>
+            </div>
+            <div class="tagline">Find Perfect Photoshoot Locations</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="welcome-content">
+            <div class="hero-section">
+                <div class="hero-text">
+                    <h2 class="main-title">
+                        <span class="word" data-delay="0">Discover</span>
+                        <span class="word" data-delay="200">Amazing</span>
+                        <span class="word" data-delay="400">Photo</span>
+                        <span class="word" data-delay="600">Locations</span>
+                    </h2>
+                    <p class="subtitle">
+                        A curated collection of stunning photography spots across India with GPS coordinates, 
+                        accessibility info, and local photographer recommendations.
+                    </p>
+                </div>
+                <!-- Start Button Section -->
+                    <div class="start-section">
+                        <button class="start-button" id="startButton">
+                            <div class="button-content">
+                                <span class="button-text">Start Exploring</span>
+                                <div class="button-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                            </div>
+                            <div class="button-glow"></div>
+                            <div class="button-particles"></div>
+                        </button>
+
+                        <div class="start-hint">
+                            <i class="fas fa-mouse"></i>
+                            <span>Click to begin your journey</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Feature Cards -->
+                <div class="floating-features">
+                    <div class="feature-card" data-delay="800">
+                        <div class="feature-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>GPS Precision</h4>
+                            <p>Exact coordinates</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card" data-delay="1000">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Local Photographers</h4>
+                            <p>Expert recommendations</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card" data-delay="1200">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Perfect Moments</h4>
+                            <p>Dream locations</p>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            <!-- Stats Counter -->
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="50">0</div>
+                    <div class="stat-label">Locations</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="10">0</div>
+                    <div class="stat-label">Cities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="100">0</div>
+                    <div class="stat-label">Happy Couples</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="welcome-footer">
+            <div class="creator-info">
+                <span>Created with ❤️ by S</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Transition -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <div class="loading-text">
+                <span>Loading your perfect locations...</span>
+            </div>
+            <div class="loading-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="welcome.js"></script>
+</body>
+</html>

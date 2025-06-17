@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discovery Area - Find Perfect Photoshoot Locations</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Add entrance animation styles -->
+    <style>
+        body {
+            opacity: 0;
+            animation: pageEnter 0.8s ease-out forwards;
+        }
+
+        @keyframes pageEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .welcome-redirect {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .welcome-redirect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Welcome Button -->
+    <a href="welcome.html" class="welcome-redirect">
+        <i class="fas fa-home"></i>
+        Back to Welcome
+    </a>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Discovery Area</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#hero" class="nav-link">Home</a></li>
+                <li><a href="#locations" class="nav-link">Locations</a></li>
+                <li><a href="#submit" class="nav-link">Submit</a></li>
+                <li><a href="#photographers" class="nav-link">Photographers</a></li>
+                <li><a href="#" class="nav-link admin-login-trigger">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Discover <span class="gradient-text">Perfect</span> Photoshoot Locations</h1>
+                <p>A curated collection of stunning photography spots across India. Find your dream location with GPS coordinates, accessibility info, and local photographer recommendations.</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Locations</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Cities</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">100+</span>
+                        <span class="stat-label">Happy Couples</span>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" data-scroll="locations">
+                        <i class="fas fa-search"></i>
+                        Explore Locations
+                    </button>
+                    <button class="btn btn-secondary" data-scroll="submit">
+                        <i class="fas fa-plus"></i>
+                        Add Location
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="location-cards">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-camera"></i>
+                        <span>Your Location</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Dream Spot</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-heart"></i>
+                        <span>Perfect Shot</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search & Filter Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search locations, cities, or landmarks...">
+                </div>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">All</button>
+                    <button class="filter-tab" data-filter="free">Free</button>
+                    <button class="filter-tab" data-filter="nature">Nature</button>
+                    <button class="filter-tab" data-filter="urban">Urban</button>
+                    <button class="filter-tab" data-filter="heritage">Heritage</button>
+                    <button class="filter-tab" data-filter="trending">Trending</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Locations Section -->
+    <section id="locations" class="locations-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Locations</h2>
+                <p>Discover amazing photoshoot spots with detailed information and GPS coordinates</p>
+            </div>
+
+            <!-- Interactive Map -->
+            <div class="map-container">
+                <div id="map" class="interactive-map"></div>
+                <div class="map-legend">
+                    <h4>Legend</h4>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span class="legend-dot green"></span>
+                            <span>Public Access</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot yellow"></span>
+                            <span>Permission Required</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot red"></span>
+                            <span>Private Property</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Locations Grid -->
+            <div class="locations-grid" id="locationsGrid">
+                <!-- Location cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit Location Section -->
+    <section id="submit" class="submit-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Share Your Favorite Location</h2>
+                <p>Help other couples discover amazing photoshoot spots by sharing your finds</p>
+            </div>
+
+            <div class="submit-container">
+                <form class="submit-form" id="submitForm">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="locationName">Location Name *</label>
+                            <input type="text" id="locationName" required placeholder="e.g., Lodhi Garden, Red Fort">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Select Location on Map *</label>
+                            <button type="button" id="openMapSelector" class="map-selector">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Click to Select Location</span>
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" readonly placeholder="Auto-filled from map">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="coordinates">GPS Coordinates *</label>
+                            <input type="text" id="coordinates" readonly placeholder="Auto-filled from map">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category">
+                                <option value="nature">Nature & Gardens</option>
+                                <option value="heritage">Heritage & Monuments</option>
+                                <option value="urban">Urban & Modern</option>
+                                <option value="beach">Beach & Coastal</option>
+                                <option value="hills">Hills & Mountains</option>
+                                <option value="architecture">Architecture</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="accessType">Access Type</label>
+                            <select id="accessType">
+                                <option value="public">Public Access</option>
+                                <option value="permission">Permission Required</option>
+                                <option value="private">Private Property</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bestTime">Best Time</label>
+                            <select id="bestTime">
+                                <option value="sunrise">Sunrise (5-7 AM)</option>
+                                <option value="morning">Morning (7-10 AM)</option>
+                                <option value="golden-hour" selected>Golden Hour (4-6 PM)</option>
+                                <option value="sunset">Sunset (6-8 PM)</option>
+                                <option value="anytime">Anytime</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="submitterName">Your Name</label>
+                            <input type="text" id="submitterName" placeholder="Optional">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="description">Description *</label>
+                            <textarea id="description" required placeholder="Describe the location, special features, parking info, best spots for photos..."></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="photos">Upload Photos</label>
+                            <div class="file-upload-area">
+                                <input type="file" id="photos" multiple accept="image/*">
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Drag & drop photos or click to browse</span>
+                                    <small>JPG, PNG, WEBP up to 10MB each</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Location
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photographers Section -->
+    <section id="photographers" class="photographers-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Photographers</h2>
+                <p>Connect with talented photographers who know these locations best</p>
+            </div>
+
+            <div class="photographers-grid">
+                <div class="photographer-card">
+                    <div class="photographer-avatar">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="photographer-info">
+                        <h3>Arjun Photography</h3>
+                        <p>Heritage & Urban Specialist</p>
+                        <div class="photographer-stats">
+                            <span><i class="fas fa-star"></i> 4.9</span>
+                            <span><i class="fas fa-images"></i> 50+ shoots</span>
+                        </div>
+                        <button class="btn btn-outline contact-btn">Contact</button>
+                    </div>
+                </div>
+
+                <div class="photographer-card">
+                    <div class="photographer-avatar">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="photographer-info">
+                        <h3>Nature Frames Studio</h3>
+                        <p>Outdoor & Nature Expert</p>
+                        <div class="photographer-stats">
+                            <span><i class="fas fa-star"></i> 4.8</span>
+                            <span><i class="fas fa-images"></i> 75+ shoots</span>
+                        </div>
+                        <button class="btn btn-outline contact-btn">Contact</button>
+                    </div>
+                </div>
+
+                <div class="photographer-card">
+                    <div class="photographer-avatar">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="photographer-info">
+                        <h3>Candid Captures</h3>
+                        <p>Creative Storytelling</p>
+                        <div class="photographer-stats">
+                            <span><i class="fas fa-star"></i> 4.9</span>
+                            <span><i class="fas fa-images"></i> 60+ shoots</span>
+                        </div>
+                        <button class="btn btn-outline contact-btn">Contact</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Section -->
+    <section id="admin" class="admin-section" style="display: none;">
+        <div class="container">
+            <div class="section-header">
+                <h2>Admin Panel</h2>
+                <p>Review and approve submitted locations</p>
+            </div>
+
+            <div class="admin-dashboard">
+                <div class="admin-stats">
+                    <div class="stat-card pending">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="pendingCount">0</span>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                    </div>
+                    <div class="stat-card approved">
+                        <div class="stat-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="approvedCount">0</span>
+                            <span class="stat-label">Approved</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-content">
+                    <div class="pending-section">
+                        <h3>Pending Approvals</h3>
+                        <div class="pending-grid" id="pendingGrid">
+                            <!-- Pending locations will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="approved-section">
+                        <h3>Recently Approved</h3>
+                        <div class="approved-grid" id="approvedGrid">
+                            <!-- Approved locations will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                <button onclick="AdminManager.downloadBackup()" class="btn btn-outline">
+                            <i class="fas fa-download"></i> Download Backup
+                        </button>
+                        <button onclick="AdminManager.showRestoreDialog()" class="btn btn-outline">
+                            <i class="fas fa-upload"></i> Restore from Backup
+                        </button>
+                        <button onclick="StorageManager.exportToFile()" class="btn btn-outline">
+                            <i class="fas fa-file-export"></i> Export to File
+                        </button>
+                        <button onclick="StorageManager.importFromFile().then(() => { AdminManager.updatePendingCount(); AdminManager.renderPendingLocations(); AdminManager.renderApprovedLocations(); LocationManager.renderLocations(APP_STATE.locations); MapManager.addMarkersToMap(APP_STATE.locations); })" class="btn btn-outline">
+                            <i class="fas fa-file-import"></i> Import from File
+                        </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-logo">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Discovery Area</span>
+                    </div>
+                    <p>Discover perfect photoshoot locations across India with GPS precision and local insights.</p>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/itz_sanjib.01?igsh=MTdtNWVmNmQzdDAxaA==" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/share/1EnVEQhWgt/?mibextid=qi2Omg" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://twitter.com/GameingSanjib" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.youtube.com/@beast_fan.zz.z" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Explore</h4>
+                        <ul>
+                            <li><a href="#locations">Browse Locations</a></li>
+                            <li><a href="#submit">Add Location</a></li>
+                            <li><a href="#photographers">Find Photographers</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="link-group">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="mailto:sanjib.smart.ai.learning@gmail.com">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="link-group">
+                        <h4>Special Thanks</h4>
+                        <ul>
+                            <li><strong>Developer:</strong></li>
+                            <li>Sanjib</li>
+                            <li><strong>Locations Managers:</strong></li>
+                            <li>Aritra, Trishan</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Discovery Area. Made with ❤️ for couples & travelling Lovers in India.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Map Selection Modal -->
+    <div id="mapSelectionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Select Location on Map</h3>
+                <button class="modal-close" id="closeMapSelector">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="selectionMap" class="selection-map"></div>
+                <div class="map-instructions">
+                    <p><i class="fas fa-info-circle"></i> Click anywhere on the map to select your location</p>
+                    <div class="selected-location">
+                        <strong>Selected:</strong> <span id="selectedLocationText">No location selected</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmSelection" class="btn btn-primary" disabled>
+                    <i class="fas fa-check"></i>
+                    Confirm Selection
+                </button>
+                <button id="cancelSelection" class="btn btn-outline">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content admin-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-shield-alt"></i> Admin Access</h3>
+                <button class="modal-close" id="closeAdminLogin">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminEmail">Email</label>
+                        <input type="email" id="adminEmail" required placeholder="admin@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" required placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminCode">Access Code</label>
+                        <input type="text" id="adminCode" required placeholder="Enter access code">
+                    </div>
+                    <div class="login-error" id="loginError">
+                        Invalid credentials. Please check your email, password, and access code.
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="adminLoginBtn" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Access Panel
+                </button>
+                <button type="button" id="cancelAdminLogin" class="btn btn-outline">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="dataManager.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+    // Only redirect to welcome if user hasn't been welcomed
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user has been welcomed
+        const hasBeenWelcomed = sessionStorage.getItem('welcomed');
+
+        console.log('Index page loaded, welcomed status:', hasBeenWelcomed);
+
+        // Only redirect if user hasn't been welcomed and isn't already on welcome page
+        if (!hasBeenWelcomed && !document.referrer.includes('welcome.html')) {
+            console.log('Redirecting to welcome page...');
+            window.location.href = 'welcome.html';
+        } else {
+            console.log('Staying on main page');
+        }
+    });
+    </script>
+</body>
+</html>
