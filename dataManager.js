@@ -7,16 +7,15 @@ class DataPersistenceManager {
     }
 
     // Initialize data manager and load existing data
-    async init() {
-        try {
-            await this.loadData();
+    init() {
+        this.loadData().then(() => {
             this.initialized = true;
             console.log('Data persistence manager initialized successfully');
-        } catch (error) {
+        }).catch((error) => {
             console.error('Failed to initialize data manager:', error);
             // If loading fails, initialize with empty data
             this.initializeEmptyData();
-        }
+        });
     }
 
     // Load data from JSON file
